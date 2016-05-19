@@ -206,7 +206,7 @@ class FirePHP {
      * Debug backtrace mode default.
      * @var type 
      */
-    protected $_trace_len = 12;
+    protected $_trace_len = 25;
     
     
     /**
@@ -214,9 +214,9 @@ class FirePHP {
      * 
      * @var array
      */
-    protected $options = array('maxDepth' => 10,
-                               'maxObjectDepth' => 5,
-                               'maxArrayDepth' => 5,
+    protected $options = array('maxDepth' => 3,
+                               'maxObjectDepth' => 2,
+                               'maxArrayDepth' => 2,
                                'useNativeJsonEncode' => true,
                                'includeLineNumbers' => true);
 
