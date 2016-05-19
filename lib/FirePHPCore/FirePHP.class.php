@@ -197,6 +197,19 @@ class FirePHP {
     protected $messageIndex = 1;
     
     /**
+     * Debug backtrace mode default.
+     * @var type 
+     */
+    protected $_trace_mode = null; //DEBUG_BACKTRACE_IGNORE_ARGS
+    
+    /**
+     * Debug backtrace mode default.
+     * @var type 
+     */
+    protected $_trace_len = 8;
+    
+    
+    /**
      * Options for the library
      * 
      * @var array
@@ -720,6 +733,34 @@ class FirePHP {
         }
         return false;
     }
+    
+    /**
+     * Get or set tracemode. Pass DEBUG_BACKTRACE_IGNORE_ARGS or null (or DEBUG_BACKTRACE_PROVIDE_OBJECT?)
+     * @param type $set_or_get
+     * @return type
+     */
+    public function traceLen($set_or_get = null)
+    {
+        if($set_or_get === null)
+        {
+            return $this->_trace_len;
+        }
+        $this->_trace_len = $set_or_get;
+    }
+    
+    /**
+     * Get or set tracemode. Pass DEBUG_BACKTRACE_IGNORE_ARGS or null (or DEBUG_BACKTRACE_PROVIDE_OBJECT?)
+     * @param type $set_or_get
+     * @return type
+     */
+    public function traceMode($set_or_get = null)
+    {
+        if($set_or_get === null)
+        {
+            return $this->_trace_mode;
+        }
+        $this->_trace_mode = $set_or_get;
+    }
  
     /**
      * Log varible to Firebug
@@ -794,7 +835,7 @@ class FirePHP {
         $fireClassLength = 18 + $parentFolderLength;
 
         if ($this->logToInsightConsole !== null && (get_class($this) == 'FirePHP_Insight' || is_subclass_of($this, 'FirePHP_Insight'))) {
-            $trace = debug_backtrace();
+            $trace = debug_backtrace(null, $this->traceLen());
             if (!$trace) return false;
             for ($i = 0; $i < sizeof($trace); $i++) {
                 if (isset($trace[$i]['class'])) {
@@ -938,7 +979,7 @@ class FirePHP {
           
         } else if ($type == self::TRACE) {
           
-            $trace = debug_backtrace();
+            $trace = debug_backtrace($this->traceMode(), $this->traceLen());
             if (!$trace) return false;
             for ($i = 0; $i < sizeof($trace); $i++) {
     
@@ -963,7 +1004,7 @@ class FirePHP {
                     $object = array('Class' => isset($trace[$i]['class']) ? $trace[$i]['class'] : '',
                                     'Type' => isset($trace[$i]['type']) ? $trace[$i]['type'] : '',
                                     'Function' => isset($trace[$i]['function']) ? $trace[$i]['function'] : '',
-                                    'Message' => $trace[$i]['args'][0],
+                                    'Message' => isset($trace[$i]['args'][0]) ? $trace[$i]['args'][0] : $object,
                                     'File' => isset($trace[$i]['file']) ? $this->_escapeTraceFile($trace[$i]['file']) : '',
                                     'Line' => isset($trace[$i]['line']) ? $trace[$i]['line'] : '',
                                     'Args' => isset($trace[$i]['args']) ? $this->encodeObject($trace[$i]['args']) : '',
@@ -1002,7 +1043,7 @@ class FirePHP {
         if ($this->options['includeLineNumbers']) {
             if (!isset($meta['file']) || !isset($meta['line'])) {
     
-                $trace = debug_backtrace();
+                $trace = debug_backtrace(null, $this->traceLen());
                 for ($i = 0; $trace && $i < sizeof($trace); $i++) {
           
                     if (isset($trace[$i]['class'])
