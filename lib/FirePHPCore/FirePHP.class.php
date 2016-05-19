@@ -206,7 +206,7 @@ class FirePHP {
      * Debug backtrace mode default.
      * @var type 
      */
-    protected $_trace_len = 8;
+    protected $_trace_len = 12;
     
     
     /**
